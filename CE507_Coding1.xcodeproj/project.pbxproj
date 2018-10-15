@@ -25,6 +25,9 @@
 /* Begin PBXFileReference section */
 		EF01763D2169598C000CA7DB /* CE507_Coding1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CE507_Coding1; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF0176402169598C000CA7DB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		EF01764721695B3F000CA7DB /* BasisFunction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasisFunction.h; sourceTree = "<group>"; };
+		EF01764821695C30000CA7DB /* Linear.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Linear.h; sourceTree = "<group>"; };
+		EF01764921698C40000CA7DB /* FE1D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FE1D.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,9 @@
 			isa = PBXGroup;
 			children = (
 				EF0176402169598C000CA7DB /* main.cpp */,
+				EF01764921698C40000CA7DB /* FE1D.h */,
+				EF01764721695B3F000CA7DB /* BasisFunction.h */,
+				EF01764821695C30000CA7DB /* Linear.h */,
 			);
 			path = CE507_Coding1;
 			sourceTree = "<group>";
