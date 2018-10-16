@@ -7,55 +7,51 @@
 #ifndef FE1D_h
 #define FE1D_h
 
-#include "/Users/Damyn/Documents/Coding Files/XCode/Numerical Data Structures/Numerical Data Structures/Matrix.h"
+#include <Eigen/Dense>
 
-Matrix<float> FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), float (*f_a_e)(int), int Ne) {
+//using namespace Eigen;
+
+Eigen::Vector3f FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), float (*f_a_e)(int), int Ne) {
     
     // Initialize matrices
-    Matrix<float> d(Ne,1);
-    Matrix<float> K(Ne,Ne);
-    Matrix<float> F(Ne,1);
+    Eigen::Matrix3f K;
+    Eigen::Vector3f F;
     
     // Necessary variables
-    float k_ab;
-    float f_a;
+    float k_ab = 0;
+    float f_a = 0;
     int P;
     int Q;
-    float toAdd;
     
     // ----- Begin algorthim -----
-    // Element iterator
+    // TODO: Add BC step
     for (int e = 0; e < Ne; e++) {
-        //
         for (int a = 0; a < 1; a++) {
-            //
             for (int b = 0; b < 1; b++) {
                 k_ab = k_ab_e(a,b); // Calc k_ab_e
             }
             f_a = f_a_e(a); // Calc f_a_e
         }
-        
-        //
+
         for (int a = 0; a < 1; a++) {
-            P = LM[a][e]; // 
+            P = LM[a][e]; // Integer mapping
             if (P != 0) {
                 for (int b = 0; b < 1; b++) {
-                    Q = LM[b][e];
+                    Q = LM[b][e]; // Integer mapping
                     if (Q != 0) {
-                        toAdd = K.at(P,Q);
-                        K.set(P, Q, toAdd + k_ab);
+                        K(P,Q) = K(P,Q) + k_ab;
+                        // Update K matrix
                     }
                 }
-                toAdd = F.at(P,1);
-                F.set(P, 1, toAdd + f_a);
+                F(P) = F(P) + f_a;
+                // Update F vector
             }
         }
     }
-    
-    // Solve system for d
-    
-    return d;
-};
 
+    // Solve system using Eigen
+    Eigen::Vector3f d = K.colPivHouseholderQr().solve(F);
+    return d;
+}
 
 #endif /* FE1D_h */

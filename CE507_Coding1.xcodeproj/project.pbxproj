@@ -247,6 +247,11 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G4A72N8YNY;
+				HEADER_SEARCH_PATHS = /usr/local/include/eigen3/;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-I</usr/local/Cellar/eigen/3.3.5>",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -256,6 +261,11 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G4A72N8YNY;
+				HEADER_SEARCH_PATHS = /usr/local/include/eigen3/;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-I</usr/local/Cellar/eigen/3.3.5>",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
