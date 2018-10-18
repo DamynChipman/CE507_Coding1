@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <time.h>
 #include <Eigen/Dense>
 #include "Linear.h"
 #include "FE1D.h"
@@ -16,6 +17,7 @@ using namespace Eigen;
 
 // Global variables
 float DEL_X; // To be set later with specific discrete domain
+int N[4] = {10,100,1000,10000}; // Number of nodes
 
 float kElement(int a, int b) {
     Eigen::Matrix2f mat;
@@ -75,11 +77,12 @@ int main(int argc, const char * argv[]) {
     string u1Names[4] = {"u1N1.csv","u1N2.csv","u1N3.csv","u1N4.csv"};
     string u2Names[4] = {"u2N1.csv","u2N2.csv","u2N3.csv","u2N4.csv"};
     string u3Names[4] = {"u3N1.csv","u3N2.csv","u3N3.csv","u3N4.csv"};
-    int N[4] = {10,100,1000,10000};
     
+    clock_t t;
+    t = clock();
     // --- BEGIN LOOP ---
     cout << " --- BEGINNING PROGRAM LOOP --- " << endl;
-    for (int n = 0; n < 1; n++) {
+    for (int n = 0; n < 3; n++) {
         cout << " n = " << n << " ---------- N = " << N[n] << " ------------ " << endl;
         // Create function and plotting domain
         cout << "   generating domains... " << endl;
@@ -164,6 +167,8 @@ int main(int argc, const char * argv[]) {
         u2.close();
         u3.close();
     }
+    t = clock() - t;
+    cout << "Previous loop took " << ((float)t/CLOCKS_PER_SEC) << " seconds" << endl;
     
     return 0;
 }
