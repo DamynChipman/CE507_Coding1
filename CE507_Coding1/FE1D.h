@@ -11,7 +11,7 @@
 
 //using namespace Eigen;
 
-Eigen::Vector3f FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), float (*f_a_e)(int), int Ne) {
+Eigen::VectorXf FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), float (*f_a_e)(int), int Ne) {
     
     // Initialize matrices
     Eigen::MatrixXf K(Ne,Ne);
@@ -29,51 +29,33 @@ Eigen::Vector3f FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), flo
     int P = 0;
     int Q = 0;
     
-    std::cout << "--- BEGINNING FE1D LOOP ---" << std::endl;
     // ----- Begin algorthim -----
     // TODO: Add BC step
     for (int e = 0; e < Ne; e++) {
-        std::cout << "  e: " << e;
         for (int a = 0; a < 2; a++) {
-            std::cout << "  a: " << a;
             for (int b = 0; b < 2; b++) {
-                std::cout << "  b: " << b;
                 k_ab = k_ab_e(a,b); // Calc k_ab_e
-                std::cout << "  k_ab: " << k_ab;
             }
             f_a = f_a_e(a); // Calc f_a_e
-            std::cout << "  f_a: " << f_a;
         }
-        std::cout << std::endl << "NEXT SECTION" << std::endl;
         for (int a = 0; a < 2; a++) {
-            std::cout << "  a: " << a;
             P = LM[a][e]; // Integer mapping
-            std::cout << "  P: " << P;
             if (P != -1) {
                 for (int b = 0; b < 2; b++) {
-                    std::cout << "  b: " << b;
                     Q = LM[b][e]; // Integer mapping
-                    std::cout << "  Q: " << Q;
                     if (Q != -1) {
-                        K(P,Q) = K(P,Q) + k_ab_e(a,b);
-                        std::cout << "  K[P,Q]: " << K(P,Q);
-                        // Update K matrix
+                        K(P,Q) = K(P,Q) + k_ab_e(a,b); // Update K matrix
                     }
                 }
-                F(P) = F(P) + f_a_e(a);
-                std::cout << "  F[P]: " << F(P);
-                // Update F vector
+                F(P) = F(P) + f_a_e(a); // Update F vector
             }
         }
-        std::cout << std::endl << "END OF LOOP FOR e: " << e << std::endl;
     }
-    std::cout << "--- END OF FE1D LOOP ---" << std::endl;
-    
-    std::cout << K << std::endl;
-    std::cout << F << std::endl;
 
     // Solve system using Eigen
-    Eigen::VectorXf d = K.colPivHouseholderQr().solve(F);
+    Eigen::VectorXf d(Ne);
+    Eigen::ColPivHouseholderQR<Eigen::MatrixXf> dec(K);
+    d = dec.solve(F);
     return d;
 }
 

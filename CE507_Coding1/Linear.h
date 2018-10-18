@@ -7,7 +7,6 @@
 #ifndef Linear_h
 #define Linear_h
 
-//#include "/Users/Damyn/Documents/Coding Files/XCode/Numerical Data Structures/Numerical Data Structures/Matrix.h"
 #include "BasisFunction.h"
 
 class Linear : public BasisFunction {

@@ -7,8 +7,6 @@
 #ifndef BasisFunctions_h
 #define BasisFunctions_h
 
-#include "/Users/Damyn/Documents/Coding Files/XCode/Numerical Data Structures/Numerical Data Structures/Matrix.h"
-
 class BasisFunction {
     
 public:
