@@ -7,19 +7,21 @@
 #ifndef FE1D_h
 #define FE1D_h
 
+#include <vector>
 #include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 //using namespace Eigen;
 
+typedef Eigen::SparseMatrix<float> SpMat;
+typedef Eigen::Triplet<float> T;
+
 Eigen::VectorXf FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), float (*f_a_e)(int,int), int Ne) {
-    
+
     // Initialize matrices
-    Eigen::MatrixXf K(Ne,Ne);
+    std::vector<T> coefs;
     Eigen::VectorXf F(Ne);
     for (int i = 0; i < Ne; i++) {
-        for (int j = 0; j < Ne; j++) {
-            K(i,j) = 0;
-        }
         F(i) = 0;
     }
     
@@ -35,7 +37,9 @@ Eigen::VectorXf FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), flo
                 for (int b = 0; b < 2; b++) {
                     Q = LM[b][e]; // Integer mapping
                     if (Q != -1) {
-                        K(P,Q) = K(P,Q) + k_ab_e(a,b); // Update K matrix
+                        if (P == Q || abs(P-Q) == 1) {
+                            coefs.push_back(T(P,Q,k_ab_e(a,b)));
+                        }
                     }
                 }
                 F(P) = F(P) + f_a_e(a,e); // Update F vector
@@ -43,13 +47,14 @@ Eigen::VectorXf FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), flo
         }
     }
     // Apply BC
-    P = LM[0][0];
-    F(P) = F(P) + f_a_e(0,0);
+    //P = LM[0][0];
+    //F(P) = F(P) + f_a_e(0,0);
 
     // Solve system using Eigen
-    Eigen::VectorXf d(Ne);
-    Eigen::ColPivHouseholderQR<Eigen::MatrixXf> dec(K);
-    d = dec.solve(F);
+    SpMat K2(Ne,Ne);
+    K2.setFromTriplets(coefs.begin(), coefs.end());
+    Eigen::SimplicialCholesky<SpMat> chol(K2);
+    Eigen::VectorXf d = chol.solve(F);
     return d;
 }
 

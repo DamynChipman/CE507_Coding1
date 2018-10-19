@@ -107,7 +107,7 @@ float fElement3(int a, int e) {
 float uActual(float x, int p) {
     float c = 1;
     if (p == 1) { return 0.5*c*(1 - x*x); }
-    else if (p == 2) { return (1.0/6.0)*(1 - x*x); }
+    else if (p == 2) { return (1.0/6.0)*(1 - x*x*x); }
     else if (p == 3) { return (1.0/12.0)*(1 - x*x*x*x); }
     else { return 0;}
 }
@@ -137,11 +137,11 @@ int main(int argc, const char * argv[]) {
         cout << "   generating domains... " << endl;
         float xL = 0;
         float xR = 1;
-        int NPlot = 100*N[n];
+        int NPlot = 10*N[n];
         Linear Nfunction(xL,xR,N[n]);
         Linear::Domain domain = Nfunction.getDomain();
         Linear::Domain plotDomain(xL,xR,NPlot);
-        DEL_X = domain.del_x_;
+        DEL_X = plotDomain.del_x_;
         
         // Create array mappings
         cout << "   generating array mappings... " << endl;
@@ -175,7 +175,9 @@ int main(int argc, const char * argv[]) {
         // Perform FE1D
         cout << "   calculating coefs1... " << endl;
         Eigen::VectorXf coefs1 = FE1D(ID, IEN, LM, kElement, fElement1, N[n]); // For f = c
+        cout << "   calculating coefs2... " << endl;
         Eigen::VectorXf coefs2 = FE1D(ID, IEN, LM, kElement, fElement2, N[n]); // For f = x
+        cout << "   calculating coefs3... " << endl;
         Eigen::VectorXf coefs3 = FE1D(ID, IEN, LM, kElement, fElement3, N[n]); // For f = x^2
         
         // Generate solution
