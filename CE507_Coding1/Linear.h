@@ -18,7 +18,7 @@ public:
         Domain(float left, float right, int n) : lBound_(left), rBound_(right), N_(n) {
             x_h_ = (float*)malloc(n * sizeof(float));
             
-            del_x_ = (right - left)/(n - 1);
+            del_x_ = (right - left)/(n);
             for (int i = 0; i < n; i++) {
                 x_h_[i] = i*del_x_;
             }
