@@ -11,7 +11,7 @@
 
 //using namespace Eigen;
 
-Eigen::VectorXf FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), float (*f_a_e)(int), int Ne) {
+Eigen::VectorXf FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), float (*f_a_e)(int,int), int Ne) {
     
     // Initialize matrices
     Eigen::MatrixXf K(Ne,Ne);
@@ -24,20 +24,11 @@ Eigen::VectorXf FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), flo
     }
     
     // Necessary variables
-    float k_ab = 0;
-    float f_a = 0;
     int P = 0;
     int Q = 0;
     
     // ----- Begin algorthim -----
-    // TODO: Add BC step
     for (int e = 0; e < Ne; e++) {
-        for (int a = 0; a < 2; a++) {
-            for (int b = 0; b < 2; b++) {
-                k_ab = k_ab_e(a,b); // Calc k_ab_e
-            }
-            f_a = f_a_e(a); // Calc f_a_e
-        }
         for (int a = 0; a < 2; a++) {
             P = LM[a][e]; // Integer mapping
             if (P != -1) {
@@ -47,10 +38,13 @@ Eigen::VectorXf FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), flo
                         K(P,Q) = K(P,Q) + k_ab_e(a,b); // Update K matrix
                     }
                 }
-                F(P) = F(P) + f_a_e(a); // Update F vector
+                F(P) = F(P) + f_a_e(a,e); // Update F vector
             }
         }
     }
+    // Apply BC
+    P = LM[0][0];
+    F(P) = F(P) + f_a_e(0,0);
 
     // Solve system using Eigen
     Eigen::VectorXf d(Ne);
