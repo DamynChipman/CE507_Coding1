@@ -51,9 +51,10 @@ Eigen::VectorXf FE1D(int* ID, int** IEN, int** LM, float (*k_ab_e)(int,int), flo
     //F(P) = F(P) + f_a_e(0,0);
 
     // Solve system using Eigen
-    SpMat K2(Ne,Ne);
-    K2.setFromTriplets(coefs.begin(), coefs.end());
-    Eigen::SimplicialCholesky<SpMat> chol(K2);
+    //std::cout << "HERE" << std::endl;
+    SpMat K(Ne,Ne);
+    K.setFromTriplets(coefs.begin(), coefs.end());
+    Eigen::SimplicialCholesky<SpMat> chol(K);
     Eigen::VectorXf d = chol.solve(F);
     return d;
 }

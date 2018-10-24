@@ -8,6 +8,7 @@
 #define Linear_h
 
 #include "BasisFunction.h"
+#include "Domain.h"
 
 class Linear : public BasisFunction {
     
@@ -24,10 +25,18 @@ public:
             }
         }
         
+        // Accessor Functions
+        float getLBound() { return lBound_; }
+        float getRBound() { return rBound_; }
+        int getN() { return N_; }
+        float* getPoints() { return x_h_; }
+        float getDelX() { return del_x_; }
+        
         ~Domain() {
-           // free(x_h_);
+            //            free(x_h_);
         }
         
+    private:
         float lBound_;
         float rBound_;
         int N_;
@@ -38,15 +47,15 @@ public:
     Linear(float xL, float xR, int N) : domain(Domain(xL,xR,N)) {}
     
     float eval(int A, float x) {
-        float xAm1 = domain.x_h_[A-1];
-        float xAp1 = domain.x_h_[A+1];
-        float xA = domain.x_h_[A];
+        float xAm1 = domain.getPoints()[A-1];
+        float xAp1 = domain.getPoints()[A+1];
+        float xA = domain.getPoints()[A];
         float res;
-        if (x >= xAm1 && x <= xA) {
-            res = (x - xAm1)/domain.del_x_;
+        if (x > xAm1 && x <= xA) {
+            res = (x - xAm1)/domain.getDelX();
         }
-        else if (x >= xA && x <= xAp1) {
-            res = (xAp1 - x)/domain.del_x_;
+        else if (x >= xA && x < xAp1) {
+            res = (xAp1 - x)/domain.getDelX();
         }
         else {
             res = 0;
