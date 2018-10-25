@@ -34,22 +34,25 @@ string LMNAMES[4] = {"LMN1.csv","LMN2.csv","LMN3.csv","LMN4.csv"};
 /**
  * @function main
  * @brief Coding Assignment 1 - CE507
- * @returns 1 : Program ran successfully
+ * @returns 1 : int : Program ran successfully
  */
 int main() {
+    
+    // Domain and BC
+    float xL = 0;
+    float xR = 1;
+    float g = 0; // Necessary BC @ x = xR = 1.0
     
     // --- BEGIN LOOP ---
     cout << " --- BEGINNING PROGRAM LOOP --- " << endl;
     clock_t t;   // Timing
     t = clock(); // Timing
-    for (int n = 0; n < 1; n++) {
+    for (int n = 0; n < 4; n++) {
         cout << " n = " << n << " ---------- N = " << N[n] << " ------------ " << endl;
         
         // Create function and plotting domain
         cout << "   generating domains... " << endl;
-        float xL = 0;
-        float xR = 1;
-        int NPlot = N[n];
+        int NPlot = N[n]+1;
         Linear Nfunction(xL,xR,N[n]);
         Linear::Domain domain = Nfunction.getDomain();
         Linear::Domain plotDomain(xL,xR,NPlot);
@@ -94,12 +97,12 @@ int main() {
         
         // Generate solution
         cout << "   generating solutions... " << endl;
-        float* u_h1 = (float*)malloc(NPlot * sizeof(float));
-        float* u_h2 = (float*)malloc(NPlot * sizeof(float));
-        float* u_h3 = (float*)malloc(NPlot * sizeof(float));
-        float* u_act1 = (float*)malloc(NPlot * sizeof(float));
-        float* u_act2 = (float*)malloc(NPlot * sizeof(float));
-        float* u_act3 = (float*)malloc(NPlot * sizeof(float));
+        float u_h1[NPlot];
+        float u_h2[NPlot];
+        float u_h3[NPlot];
+        float u_act1[NPlot];
+        float u_act2[NPlot];
+        float u_act3[NPlot];
         for (int i = 0; i < NPlot; i++) {
             u_h1[i] = 0;
             u_h2[i] = 0;
@@ -113,6 +116,13 @@ int main() {
                 u_h3[i] = u_h3[i] + coefs3(j)*Nfunction.eval(j, plotDomain.getPoints()[i]);
             }
         }
+        // Add BC (known points)
+        u_h1[NPlot] = g;
+        u_h2[NPlot] = g;
+        u_h3[NPlot] = g;
+        u_act1[NPlot-1] = g;
+        u_act2[NPlot-1] = g;
+        u_act3[NPlot-1] = g;
         
         // Output results
         cout << "   outputing results... " << endl;
@@ -128,7 +138,7 @@ int main() {
         ofstream LMOutput(LMNAMES[n]);
         char delim = ',';
         
-        for (int i = 0; i < NPlot; i++) {
+        for (int i = 0; i < NPlot-1; i++) {
             x << plotDomain.getPoints()[i] << delim;
             u1 << u_h1[i] << delim;
             u2 << u_h2[i] << delim;
@@ -137,6 +147,13 @@ int main() {
             uAct2 << u_act2[i] << delim;
             uAct3 << u_act3[i] << delim;
         }
+        x << xR << delim;
+        u1 << u_h1[NPlot] << delim;
+        u2 << u_h2[NPlot] << delim;
+        u3 << u_h3[NPlot] << delim;
+        uAct1 << u_act1[NPlot] << delim;
+        uAct2 << u_act2[NPlot] << delim;
+        uAct3 << u_act3[NPlot] << delim;
         
         for (int i = 0; i < N[n]; i++) {
             IDOutput << ID[i] << delim;
@@ -167,12 +184,6 @@ int main() {
         }
         delete [] IEN;
         delete [] LM;
-        free(u_h1);
-        free(u_h2);
-        free(u_h3);
-        free(u_act1);
-        free(u_act2);
-        free(u_act3);
         
         // Timing
         t = clock() - t;

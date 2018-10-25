@@ -10,6 +10,8 @@
 // Global Variables
 float DEL_X; // To be set later with specific discrete domain, needs global scope
 
+// ----- Function Definitions -----
+
 /**
  * @function kElement
  * @brief k Element Matrix
@@ -80,8 +82,10 @@ float fElement2(int a, int e) {
 float fElement3(int a, int e) {
     //cout << "  In fElement3: e = " << e << endl;
     Eigen::Vector2f vec;
-    float f1 = (e*DEL_X)*(e*DEL_X);
-    float f2 = ((e+1)*DEL_X)*((e+1)*DEL_X);
+    float x1 = e*DEL_X;
+    float x2 = (e+1)*DEL_X;
+    float f1 = x1*x1;
+    float f2 = x2*x2;
     
     float value = DEL_X/6;
     vec(0) = value*(2*f1 + f2);
