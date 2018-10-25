@@ -29,6 +29,7 @@
 		EF01764821695C30000CA7DB /* Linear.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Linear.h; sourceTree = "<group>"; };
 		EF01764921698C40000CA7DB /* FE1D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FE1D.h; sourceTree = "<group>"; };
 		EF145C0521813C8D0036C4ED /* functions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = functions.h; sourceTree = "<group>"; };
+		EF145C0621817C120036C4ED /* gaussQuad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gaussQuad.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				EF0176402169598C000CA7DB /* main.cpp */,
+				EF145C0621817C120036C4ED /* gaussQuad.h */,
 				EF145C0521813C8D0036C4ED /* functions.h */,
 				EF01764921698C40000CA7DB /* FE1D.h */,
 				EF01764721695B3F000CA7DB /* BasisFunction.h */,

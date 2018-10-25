@@ -10,6 +10,7 @@
 #include <time.h>
 #include <Eigen/Dense>
 #include "functions.h"
+#include "gaussQuad.h"
 #include "Linear.h"
 #include "Domain.h"
 #include "FE1D.h"
@@ -29,6 +30,9 @@ string UACT3NAMES[4] = {"uAct3N1.csv","uAct3N2.csv","uAct3N3.csv","uAct3N4.csv"}
 string IDNAMES[4] = {"IDN1.csv","IDN2.csv","IDN3.csv","IDN4.csv"};
 string IENNAMES[4] = {"IENN1.csv","IENN2.csv","IENN3.csv","IENN4.csv"};
 string LMNAMES[4] = {"LMN1.csv","LMN2.csv","LMN3.csv","LMN4.csv"};
+string ERRORNAMES[4] = {"errorN1.csv","errorN2.csv","errorN3.csv","errorN4.csv"};
+string DELXNAME = "delX.csv";
+ofstream DELXOUTPUT(DELXNAME);
 
 // ----- Main Function -----
 /**
@@ -57,6 +61,7 @@ int main() {
         Linear::Domain domain = Nfunction.getDomain();
         Linear::Domain plotDomain(xL,xR,NPlot);
         DEL_X = domain.getDelX();
+        DELXOUTPUT << DEL_X << ',';
         
         // Create array mappings
         cout << "   generating array mappings... " << endl;
@@ -124,6 +129,16 @@ int main() {
         u_act2[NPlot-1] = g;
         u_act3[NPlot-1] = g;
         
+        // Calculate Gaussian Quadrature Error
+        cout << "   calculating error... " << endl;
+        float e1 = gaussQuad(u_act1, u_h1, NPlot);
+        float e2 = gaussQuad(u_act2, u_h2, NPlot);
+        float e3 = gaussQuad(u_act3, u_h3, NPlot);
+        float error[3] = {e1,e2,e3};
+//        cout << " e1 = " << e1 << endl;
+//        cout << " e2 = " << e2 << endl;
+//        cout << " e3 = " << e3 << endl;
+        
         // Output results
         cout << "   outputing results... " << endl;
         ofstream x(XNAMES[n]);
@@ -136,6 +151,7 @@ int main() {
         ofstream IDOutput(IDNAMES[n]);
         ofstream IENOutput(IENNAMES[n]);
         ofstream LMOutput(LMNAMES[n]);
+        ofstream errorOutput(ERRORNAMES[n]);
         char delim = ',';
         
         for (int i = 0; i < NPlot-1; i++) {
@@ -165,6 +181,10 @@ int main() {
             LMOutput << endl;
         }
         
+        for (int i = 0; i < 3; i++) {
+            errorOutput << error[i] << delim;
+        }
+        
         x.close();
         u1.close();
         u2.close();
@@ -175,6 +195,7 @@ int main() {
         IDOutput.close();
         IENOutput.close();
         LMOutput.close();
+        errorOutput.close();
         
         // Memory
         free(ID);
